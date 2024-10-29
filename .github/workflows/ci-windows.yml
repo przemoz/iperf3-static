@@ -1,7 +1,6 @@
 name: ci - windows binary build
 
 on:
-  workflow_dispatch:
   workflow_call:
     outputs:
       release_tags:

@@ -1,7 +1,6 @@
 name: rerun failed jobs with gh cli
 
-on:
-  workflow_dispatch:
+on:  
     inputs:
       run_id:
         description: "The run id of the workflow to rerun"

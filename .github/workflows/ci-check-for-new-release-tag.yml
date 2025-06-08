@@ -25,8 +25,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Get latest esnet/iperf tag
-        run: printf '%s\n' "upstream_iperf3_tag=$(git ls-remote -q -t --refs "https://github.com/esnet/iperf.git" | awk '{sub("refs/tags/", ""); if ($2 ~ /^[0-9]+(\.[0-9]+)*$/) print $2 }' | sort -rV | awk '!/^$/' | head -n 1)" >> $GITHUB_ENV
+      - name: Get latest przemoz/iperf tag
+        run: printf '%s\n' "upstream_iperf3_tag=$(git ls-remote -q -t --refs "https://github.com/przemoz/iperf.git" | awk '{sub("refs/tags/", ""); if ($2 ~ /^[0-9]+(\.[0-9]+)*$/) print $2 }' | sort -rV | awk '!/^$/' | head -n 1)" >> $GITHUB_ENV
 
       - name: Get latest ${{ github.repository }} tag
         run: printf '%s\n' "local_iperf3_tag=$(git ls-remote -q -t --refs "https://github.com/${{ github.repository }}.git" | awk '{sub("refs/tags/", ""); if ($2 ~ /^[0-9]+(\.[0-9]+)*$/) print $2 }' | sort -rV | awk '!/^$/' | head -n 1)" >> $GITHUB_ENV

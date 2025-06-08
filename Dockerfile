@@ -1,7 +1,7 @@
 FROM alpine:latest AS builder
 
 ARG ARCH="amd64"
-ARG REPO="userdocs/iperf3-static"
+ARG REPO="przemoz/iperf3-static"
 
 RUN apk update \
 	&& apk upgrade \

@@ -83,7 +83,7 @@ jobs:
       contents: read
     outputs:
       source_repo: ${{ github.event.inputs.source_repo || 'https://github.com/przemoz/iperf.git' }}
-      source_branch: ${{ github.event.inputs.source_branch || 'issues-472_v3_19_24_05_2025' }}
+      source_branch: ${{ github.event.inputs.source_branch || 'master' }}
       artifacts_only: ${{ github.event.inputs.artifacts_only || 'false' }}
       skip_new_tag_check: ${{ github.event.inputs.skip_new_tag_check || 'false'  }}
       linux_build_type: ${{ github.event.inputs.linux_build_type || 'false' }}

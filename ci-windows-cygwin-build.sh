@@ -7,8 +7,8 @@ if [[ "${2}" =~ ^/ ]]; then
 else
 	cygwin_path="${HOME}/${2:-cygwin}"
 fi
-source_repo="${3:-https://github.com/esnet/iperf.git}"
-source_branch="${4:-master}"
+source_repo="${3:-https://github.com/przemoz/iperf.git}"
+source_branch="${4:-issues-472_v3_19_24_05_2025}"
 
 printf '\n%b\n' " \e[93m\U25cf\e[0m With openssl = ${with_openssl}"
 printf '%b\n' " \e[93m\U25cf\e[0m Build path = ${HOME}"

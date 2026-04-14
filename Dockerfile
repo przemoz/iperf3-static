@@ -1,7 +1,19 @@
-FROM alpine:latest AS builder
+FROM alpine:latest@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS builder
 
 ARG ARCH="amd64"
 ARG REPO="przemoz/iperf3-static"
+
+# Add metadata labels for easy parsing
+LABEL org.opencontainers.image.base.name="alpine:latest" \
+      org.opencontainers.image.base.id="alpine" \
+      org.opencontainers.image.base.codename="latest" \
+      org.opencontainers.image.title="iperf3-static" \
+      org.opencontainers.image.description="statically linked iperf3 linux binaries built on Alpine Linux" \
+      org.opencontainers.image.source="https://github.com/userdocs/iperf3-static" \
+      org.opencontainers.image.url="https://github.com/userdocs/iperf3-static" \
+      org.opencontainers.image.documentation="https://github.com/userdocs/iperf3-static/blob/master/README.md" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.vendor="userdocs"
 
 RUN apk update \
 	&& apk upgrade \

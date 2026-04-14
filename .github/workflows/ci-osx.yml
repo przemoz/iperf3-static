@@ -18,7 +18,7 @@ on:
       brew_install:
         type: string
         required: true
-      target:
+      runs_on:
         type: string
         required: true
       binary_filename:
@@ -35,16 +35,17 @@ env:
   source_branch: ${{ inputs.source_branch }}
   brew_cellar: ${{ inputs.brew_cellar }}
   brew_install: ${{ inputs.brew_install }}
-  target: ${{ inputs.target }}
+  runs_on: ${{ inputs.runs_on }}
 
 jobs:
   build:
-    runs-on: ${{ inputs.target }}
+    runs-on: ${{ inputs.runs_on }}
+    environment: production
     outputs:
       release_tags: ${{ steps.release_tags.outputs.release_tag }}
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
@@ -104,14 +105,14 @@ jobs:
 
       - name: VirusTotal Scan
         id: virustotal
-        uses: crazy-max/ghaction-virustotal@v4
+        uses: crazy-max/ghaction-virustotal@936d8c5c00afe97d3d9a1af26d017cfdf26800a2 # v5.0.0
         with:
           vt_api_key: ${{ secrets.VT_API_KEY }}
           files: ${{ env.binary_path }}
 
       - name: sha256sum
         run: |
-          printf '%s' https://www.virustotal.com/gui/file/$(shasum -a 256 ${{ env.binary_path }} | awk '{print $1}') > iperf3-${binary_filename}.url
+          printf '%s' https://www.virustotal.com/gui/file/$(shasum -a 256 ${binary_path} | awk '{print $1}') > iperf3-${binary_filename}.url
           cat iperf3-${binary_filename}.url
 
       - name: Create tag env
@@ -119,15 +120,15 @@ jobs:
 
       - name: Set tag env to output
         id: release_tags
-        run: printf '%s\n' "release_tag=${{ env.release_tag }}" >> "$GITHUB_OUTPUT"
+        run: printf '%s\n' "release_tag=${release_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: ${{ env.binary_path }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: iperf3-${{ inputs.binary_filename }}
           path: |
@@ -136,7 +137,7 @@ jobs:
 
       - name: Upload artifact
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: iperf3-${{ inputs.binary_filename }}-config.log
           path: ${{ github.workspace }}/iperf3/config.log

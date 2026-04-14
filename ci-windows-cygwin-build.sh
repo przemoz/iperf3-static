@@ -2,7 +2,7 @@
 
 HOME="$(pwd)"
 with_openssl="${1:-no}"
-if [[ "${2}" =~ ^/ ]]; then
+if [[ ${2} =~ ^/ ]]; then
 	cygwin_path="${2}"
 else
 	cygwin_path="${HOME}/${2:-cygwin}"
@@ -21,17 +21,19 @@ printf '\n%b\n' " \e[93m\U25cf\e[0m cygwin_path = ${cygwin_path}"
 printf '\n%b\n' " \e[93m\U25cf\e[0m source_repo = ${source_repo}"
 printf '\n%b\n' " \e[93m\U25cf\e[0m source_branch = ${source_branch}"
 
-if [[ "${with_openssl}" == 'yes' ]]; then
+if [[ ${with_openssl} == 'yes' ]]; then
 	printf '\n%b\n' " \e[94m\U25cf\e[0m Downloading zlib"
 	curl -sLO "https://github.com/userdocs/qbt-workflow-files/releases/latest/download/zlib.tar.xz"
 
-	openssl_version="$(git ls-remote -q -t --refs "https://github.com/openssl/openssl.git" | awk '/openssl-3\.1\./{sub("refs/tags/", "");sub("(.*)(v6|rc|alpha|beta)(.*)", ""); print $2 }' | awk '!/^$/' | sort -rV | head -n1)"
+	# Version 3.0 will be supported until 2026-09-07 (LTS). 3.1 is EOL https://openssl-library.org/policies/releasestrat/index.html
+	openssl_version="$(git ls-remote -q -t --refs "https://github.com/openssl/openssl.git" | awk '/openssl-3\.0\./{sub("refs/tags/", "");sub("(.*)(v6|rc|alpha|beta)(.*)", ""); print $2 }' | awk '!/^$/' | sort -rV | head -n1)"
 
 	printf '\n%b\n' " \e[94m\U25cf\e[0m Downloading openssl ${openssl_version}"
 	curl -sLO "https://github.com/openssl/openssl/releases/download/${openssl_version}/${openssl_version}.tar.gz"
 
 	printf '\n%b\n' " \e[94m\U25cf\e[0m Extracting zlib"
-	rm -rf "zlib" && tar xf "zlib.tar.xz"
+	rm -rf "zlib" && mkdir -p "zlib"
+	tar xf "zlib.tar.xz" --strip-components=1 -C "zlib"
 
 	printf '\n%b\n' " \e[94m\U25cf\e[0m Extracting openssl"
 	rm -rf "openssl" && mkdir -p "openssl"
@@ -61,11 +63,11 @@ fi
 printf '\n%b\n\n' " \e[94m\U25cf\e[0m Cloning iperf3 git repo"
 
 [[ -d "$HOME/iperf3_build" ]] && rm -rf "$HOME/iperf3_build"
-printf '\n%b\n\n' " \e[94m\U25cf\e[0m git clone --no-tags --single-branch --branch ${source_branch} --shallow-submodules --recurse-submodules -j$(nproc) --depth 1 ${source_repo} $HOME/iperf3_build"
+printf '%b\n\n' " \e[94m\U25cf\e[0m git clone --no-tags --single-branch --branch ${source_branch} --shallow-submodules --recurse-submodules -j$(nproc) --depth 1 ${source_repo} $HOME/iperf3_build"
 git clone --no-tags --single-branch --branch "${source_branch}" --shallow-submodules --recurse-submodules -j"$(nproc)" --depth 1 "${source_repo}" "$HOME/iperf3_build"
 cd "$HOME/iperf3_build" || exit 1
 
-printf '\n%b\n\n' " \e[94m\U25cf\e[0m Repo Info"
+printf '%b\n\n' " \e[94m\U25cf\e[0m Repo Info"
 
 git remote show origin
 
